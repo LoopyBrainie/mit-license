@@ -6,9 +6,7 @@ import process from 'node:process'
 import express from 'express'
 import minify from 'express-minify'
 import favicon from 'serve-favicon'
-import postcssMiddleware from 'postcss-middleware'
 import tempDirectory from 'temp-dir'
-import postcssPresetEnv from 'postcss-preset-env'
 import cors from 'cors'
 
 import postRoute from './routes/post.js'
@@ -32,20 +30,7 @@ app.set('views', path.join(directoryName, '/licenses'))
 // Setup static files
 app.use('/robots.txt', express.static('robots.txt'))
 app.use('/favicon.ico', express.static(`${directoryName}/favicon.ico`))
-app.use(
-  '/themes',
-  postcssMiddleware({
-    plugins: [
-      postcssPresetEnv({
-        overrideBrowserslist: '>= 0%',
-      }),
-    ],
-    src(request) {
-      return path.join(directoryName, 'themes', request.path)
-    },
-  }),
-  express.static('themes'),
-)
+app.use('/themes', express.static(path.join(directoryName, 'themes')))
 
 // Middleware
 

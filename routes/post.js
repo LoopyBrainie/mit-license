@@ -4,7 +4,6 @@ import process from 'node:process'
 import toBase64 from 'btoa'
 import {readPackage} from 'read-pkg'
 import size from 'any-size'
-import {Octokit} from '@octokit/rest'
 import {pathExists} from 'path-exists'
 import {writeJsonFile} from 'write-json-file'
 import yn from 'yn'
@@ -14,13 +13,6 @@ import isDomainId from '../utils/is-domain-id.js'
 const directoryName = dirname(fileURLToPath(import.meta.url))
 
 const {version} = await readPackage()
-
-const github = new Octokit({
-  // GitHub personal access token
-  auth: process.env.github_token,
-  // User agent with version from package.json
-  userAgent: `mit-license v${version}`,
-})
 
 function getUserData({query, body}) {
   // If query parameters provided
@@ -97,27 +89,13 @@ export default async function postRoute(request, response) {
   }
 
   try {
-    await Promise.all([
-      github.repos.createOrUpdateFileContents({
-        owner: 'remy',
-        repo: 'mit-license',
-        path: `users/${id}.json`,
-        message: `Automated creation of user ${id}.`,
-        content: toBase64(JSON.stringify(userData, 0, 2)),
-        committer: {
-          name: 'MIT License Bot',
-          email: 'remy@leftlogic.com',
-        },
-      }),
-      writeJsonFile(path.join(directoryName, '..', 'users', `${id}.json`), userData, {indent: undefined}),
-    ])
-
-    response.status(201).send(`MIT license page created: https://${hostname}`)
+    await writeJsonFile(path.join(directoryName, '..', 'users', `${id}.json`), userData, {indent: 2})
+    response.status(201).send(`MIT license page created: /users/${id}.json`)
   } catch {
     response
       .status(500)
       .send(
-        'Unable to create new user - please send a pull request on https://github.com/remy/mit-license',
+        'Unable to create new user - please check local file permissions.',
       )
   }
 }

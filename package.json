@@ -38,6 +38,7 @@
     "html-text": "^1.0.1",
     "load-json-file": "^7.0.1",
     "path-exists": "^5.0.0",
+    "postcss": "^8.5.4",
     "postcss-middleware": "^0.0.1",
     "postcss-preset-env": "^10.2.0",
     "read-pkg": "^7.0.0",
