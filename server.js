@@ -15,7 +15,7 @@ import postRoute from './routes/post.js'
 import getRoute from './routes/get.js'
 
 // Server
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 3000
 
 const directoryName = dirname(fileURLToPath(import.meta.url))
 
