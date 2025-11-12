@@ -1,10 +1,12 @@
 {
   "name": "mit-licence",
-  "description": "Hosted MIT License with details controlled through this repo",
-  "private": true,
+  "description": "Hosted MIT License with details controlled through this repo and CLI tool for generating license files",
   "type": "module",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "main": "server.js",
+  "bin": {
+    "mit-license": "./bin/cli.js"
+  },
   "repository": {
     "type": "git",
     "url": "git@github.com:remy/mit-license.git"
