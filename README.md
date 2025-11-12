@@ -276,7 +276,17 @@ Compared to the previous Node.js implementation:
 
 ## License
 
-MIT License - see [LICENSE](./LICENSE) file for details.
+MIT License
+
+Copyright (c) 2025 Brra1n0@LoopyBrainie
+
+See [LICENSE](./LICENSE) file for full text.
+
+## Author
+
+- **Name**: Brra1n0@LoopyBrainie
+- **Email**: LamKokMan@outlook.com
+- **GitHub**: https://github.com/LoopyBrainie
 
 ## Contributing
 
@@ -285,6 +295,4 @@ Contributions are welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for g
 ## Links
 
 - [GitHub Repository](https://github.com/LoopyBrainie/mit-license)
-- [Detailed Documentation](./README_RUST.md)
-- [Migration Guide](./MIGRATION.md)
 - [Rust Official Website](https://www.rust-lang.org/)

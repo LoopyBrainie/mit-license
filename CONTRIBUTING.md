@@ -1,16 +1,59 @@
-# Development environment setup
+# Contributing to Auto-MIT
 
-With [Node.js](https://nodejs.dev) installed, [`git clone` the repository](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/cloning-a-repository-from-github/cloning-a-repository#cloning-a-repository) then run `npm install` and `npm run dev` to start the development server.
+Thank you for your interest in contributing to Auto-MIT! This guide will help you get started.
 
-# Merging user updates
+## Development Setup
 
-If you are a collaborator (with push permissions), you can merge any open PR with the following conditions:
+### Prerequisites
+- Rust 1.70 or higher
+- Cargo (comes with Rust)
 
-1. It passes the JSON validity test (this is a GitHub integration in Travis CI)
-2. It adds or updates a `<user>.json` file
+### Getting Started
 
-If you're unsure, cc @remy into the PR with a question and we can work out what to do.
+```bash
+# Clone the repository
+git clone https://github.com/LoopyBrainie/mit-license.git
+cd mit-license
 
-The site is hosted on Heroku and will automatically deploy merges into master, which means once a PR is merged, it'll be live shortly thereafter (so there's nothing to do 🎉).
+# Build the project
+cargo build
 
-Also, thank you, your help is appreciated 💙
+# Run tests
+cargo test
+
+# Run the CLI
+cargo run -- --help
+```
+
+## Making Changes
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Make your changes
+4. Run tests and linting:
+   ```bash
+   cargo test
+   cargo clippy
+   cargo fmt
+   ```
+5. Commit your changes with clear messages
+6. Push to your fork
+7. Open a Pull Request
+
+## Code Style
+
+- Follow Rust standard style (enforced by `rustfmt`)
+- Run `cargo fmt` before committing
+- Ensure `cargo clippy` passes without warnings
+- Write tests for new features
+
+## Pull Request Guidelines
+
+- Keep PRs focused on a single feature or fix
+- Update documentation if needed
+- Ensure all tests pass
+- Follow the existing code structure
+
+## Questions?
+
+Open an issue for questions or discussions about contributing.
