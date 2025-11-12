@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>auto-mit</id>
+    <version>0.1.0</version>
+    <packageSourceUrl>https://github.com/LoopyBrainie/mit-license</packageSourceUrl>
+    <owners>LoopyBrainie</owners>
+    <title>Auto-MIT License Generator</title>
+    <authors>Brra1n0@LoopyBrainie</authors>
+    <projectUrl>https://github.com/LoopyBrainie/mit-license</projectUrl>
+    <licenseUrl>https://github.com/LoopyBrainie/mit-license/blob/master/LICENSE</licenseUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectSourceUrl>https://github.com/LoopyBrainie/mit-license</projectSourceUrl>
+    <bugTrackerUrl>https://github.com/LoopyBrainie/mit-license/issues</bugTrackerUrl>
+    <tags>license mit isc cli rust generator</tags>
+    <summary>A high-performance Rust-based CLI tool for generating MIT and ISC license files</summary>
+    <description>
+Auto-MIT is a high-performance Rust-based CLI tool that generates MIT and ISC license files directly in your projects with a single command.
+
+Features:
+- Fast: Built with Rust for blazing-fast performance (30x faster than Node.js)
+- Flexible: Command-line arguments, YAML config files, or interactive mode
+- User-friendly: Beautiful interactive prompts with color themes
+- International: Chinese and English support
+- Multiple licenses: MIT and ISC license support
+- Lightweight: Small binary (~3MB), minimal memory footprint (~2MB)
+
+Usage:
+- auto-mit -n "Your Name" -y 2024
+- auto-mit --interactive
+- auto-mit --config config.yaml
+    </description>
+    <releaseNotes>https://github.com/LoopyBrainie/mit-license/releases</releaseNotes>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>

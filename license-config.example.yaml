@@ -1,0 +1,22 @@
+# Example License Configuration File
+# Use this file with: auto-mit --config license-config.example.yaml
+
+# Required: Copyright holder name
+copyright: "Your Name"
+
+# Optional: Contact information
+email: "your.email@example.com"
+url: "https://your-website.com"
+
+# Optional: License type (MIT or ISC)
+license: "MIT"
+
+# Optional: Year configuration
+# Use either 'year' for a single year or 'start_year' and 'end_year' for a range
+year: 2024
+# start_year: 2020
+# end_year: 2024
+
+# Optional: Format and theme (reserved for web version)
+format: "txt"
+theme: "default"
