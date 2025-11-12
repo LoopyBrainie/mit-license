@@ -1,0 +1,25 @@
+[package]
+name = "auto-mit"
+version = "0.1.0"
+edition = "2021"
+authors = ["LoopyBrainie <LamKokMan@outlook.com>"]
+description = "CLI tool for generating MIT and ISC license files"
+license = "MIT"
+repository = "https://github.com/LoopyBrainie/mit-license"
+
+[[bin]]
+name = "auto-mit"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive", "cargo"] }
+tokio = { version = "1.41", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+anyhow = "1.0"
+chrono = "0.4"
+dialoguer = "0.11"
+handlebars = "6.2"
+
+[dev-dependencies]
+tempfile = "3.14"

@@ -1,25 +1,35 @@
 {
   "name": "mit-licence",
-  "description": "Hosted MIT License with details controlled through this repo and CLI tool for generating license files",
+  "description": "Hosted MIT License service and high-performance Rust CLI tool (auto-mit) for generating license files",
   "type": "module",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "main": "server.js",
   "bin": {
-    "mit-license": "./bin/cli.js"
+    "mit-license": "./bin/cli.js",
+    "auto-mit": "./target/release/auto-mit"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:remy/mit-license.git"
+    "url": "git@github.com:LoopyBrainie/mit-license.git"
   },
   "engines": {
-    "node": "14.x"
+    "node": ">=14.x"
   },
-  "author": "Remy Sharp <remy@leftlogic.com> (http://remysharp.com/)",
+  "author": "LoopyBrainie <LamKokMan@outlook.com> (https://github.com/LoopyBrainie)",
+  "contributors": [
+    "Remy Sharp <remy@leftlogic.com> (http://remysharp.com/)"
+  ],
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
     "serve": "node server.js",
-    "test": "xo && node test.js"
+    "test": "xo && node test.js",
+    "build:rust": "cargo build --release",
+    "test:rust": "cargo test",
+    "lint:rust": "cargo clippy",
+    "format:rust": "cargo fmt",
+    "install:rust": "cargo install --path .",
+    "cli": "./target/release/auto-mit"
   },
   "bugs": {
     "url": "https://github.com/remy/mit-license/issues"

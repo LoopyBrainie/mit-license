@@ -2,6 +2,52 @@
 
 I always forget to add a `LICENSE` file to my projects, so I wanted to link to a single resource that would always be up to date and would always have my details online.
 
+## 🚀 New: Auto-MIT CLI Tool
+
+**Generate license files locally with a single command!**
+
+We now provide a high-performance Rust-based CLI tool called `auto-mit` that lets you generate MIT and ISC license files directly in your projects.
+
+### Quick Start
+
+```bash
+# Generate a license with your name
+auto-mit -n "Your Name" -y 2024
+
+# Interactive mode
+auto-mit --interactive
+
+# Use a YAML config file
+auto-mit --config license-config.yaml
+
+# Get help
+auto-mit --help
+```
+
+### Features
+
+- 🚀 **Fast**: Built with Rust for blazing-fast performance
+- 📝 **Flexible**: Command-line arguments, YAML config files, or interactive mode
+- 🎨 **User-friendly**: Beautiful interactive prompts
+- 🌍 **International**: Chinese and English support
+- 📦 **Multiple formats**: MIT and ISC licenses supported
+
+📖 **Full CLI Documentation**: See [README_RUST.md](./README_RUST.md) for detailed usage instructions.
+
+### Installation
+
+```bash
+# From source
+git clone https://github.com/LoopyBrainie/mit-license.git
+cd mit-license
+cargo build --release
+cargo install --path .
+```
+
+---
+
+## Online MIT License Service
+
 Why keep this to myself, there are three ways to create your _own_ MIT license page:
 
 1.  Use the generator tool (easiest)
