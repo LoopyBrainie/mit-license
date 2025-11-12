@@ -3,6 +3,10 @@
 *.rs.bk
 *.pdb
 
+# Chocolatey
+*.nupkg
+*.zip
+
 # OS Files
 .DS_Store
 .DS_Store?

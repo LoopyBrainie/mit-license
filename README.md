@@ -29,6 +29,14 @@ auto-mit --help
 
 ## Installation
 
+### Windows (Chocolatey)
+
+The easiest way to install on Windows is using Chocolatey:
+
+```powershell
+choco install auto-mit
+```
+
 ### From Source
 
 ```bash
