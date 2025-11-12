@@ -1,4 +1,6 @@
-name: Release and Chocolatey Publish
+# actionlint: allow-secrets CHOCO_API_KEY
+
+name: Chocolatey Publish
 
 on:
   push:
@@ -9,123 +11,67 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-windows:
-    name: Build Windows Release
+  chocolatey:
     runs-on: windows-latest
-    
+
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: Install Rust
-      uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
-        override: true
-        target: x86_64-pc-windows-msvc
-    
-    - name: Build Release
-      run: cargo build --release --target x86_64-pc-windows-msvc
-    
-    - name: Create Release Archive
-      shell: pwsh
-      run: |
-        $version = "${{ github.ref_name }}" -replace '^v', ''
-        Compress-Archive -Path target/x86_64-pc-windows-msvc/release/auto-mit.exe -DestinationPath auto-mit-x86_64-pc-windows-msvc.zip
-        
-    - name: Calculate Checksum
-      shell: pwsh
-      id: checksum
-      run: |
-        $hash = (Get-FileHash auto-mit-x86_64-pc-windows-msvc.zip -Algorithm SHA256).Hash
-        echo "SHA256=$hash" >> $env:GITHUB_OUTPUT
-        echo "Checksum: $hash"
-    
-    - name: Upload Release Asset
-      uses: softprops/action-gh-release@v1
-      with:
-        files: auto-mit-x86_64-pc-windows-msvc.zip
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Upload artifact for Chocolatey
-      uses: actions/upload-artifact@v3
-      with:
-        name: windows-release
-        path: |
-          auto-mit-x86_64-pc-windows-msvc.zip
-          
-  chocolatey-publish:
-    name: Publish to Chocolatey
-    needs: build-windows
-    runs-on: windows-latest
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Download Windows Release
-      uses: actions/download-artifact@v3
-      with:
-        name: windows-release
-    
-    - name: Get Version
-      shell: pwsh
-      id: version
-      run: |
-        $version = "${{ github.ref_name }}" -replace '^v', ''
-        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
-        echo "Version: $version"
-    
-    - name: Calculate Checksum
-      shell: pwsh
-      id: checksum
-      run: |
-        $hash = (Get-FileHash auto-mit-x86_64-pc-windows-msvc.zip -Algorithm SHA256).Hash
-        echo "SHA256=$hash" >> $env:GITHUB_OUTPUT
-        echo "Checksum: $hash"
-    
-    - name: Update nuspec version
-      shell: pwsh
-      run: |
-        $version = "${{ steps.version.outputs.VERSION }}"
-        $nuspec = Get-Content auto-mit.nuspec -Raw
-        $nuspec = $nuspec -replace '<version>.*</version>', "<version>$version</version>"
-        Set-Content auto-mit.nuspec $nuspec
-    
-    - name: Update install script with version and checksum
-      shell: pwsh
-      run: |
-        $version = "${{ steps.version.outputs.VERSION }}"
-        $checksum = "${{ steps.checksum.outputs.SHA256 }}"
-        $script = Get-Content tools/chocolateyinstall.ps1 -Raw
-        $script = $script -replace '__VERSION__', "${{ github.ref_name }}"
-        $script = $script -replace '__CHECKSUM__', $checksum
-        Set-Content tools/chocolateyinstall.ps1 $script
-    
-    - name: Install Chocolatey
-      shell: pwsh
-      run: |
-        if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
-          Set-ExecutionPolicy Bypass -Scope Process -Force
-          [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-          iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-        }
-    
-    - name: Pack Chocolatey Package
-      shell: pwsh
-      run: |
-        choco pack auto-mit.nuspec
-    
-    - name: Push to Chocolatey
-      shell: pwsh
-      env:
-        CHOCO_API_KEY: eedd3db8-4e9f-4daf-b26d-608a3e8532bf
-      run: |
-        $nupkg = Get-ChildItem -Filter "auto-mit.*.nupkg" | Select-Object -First 1
-        choco push $nupkg.Name --source https://push.chocolatey.org/ --api-key $env:CHOCO_API_KEY
-    
-    - name: Upload Chocolatey Package as Artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: chocolatey-package
-        path: "*.nupkg"
+      - uses: actions/checkout@v4
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+          target: x86_64-pc-windows-msvc
+
+      - name: Build release binary
+        run: cargo build --release --target x86_64-pc-windows-msvc
+
+      - name: Prepare Chocolatey package files
+        shell: pwsh
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $version = $tag -replace '^v', ''
+          $zipPath = "auto-mit-x86_64-pc-windows-msvc.zip"
+
+          if (Test-Path $zipPath) {
+            Remove-Item $zipPath -Force
+          }
+
+          Compress-Archive -Path target/x86_64-pc-windows-msvc/release/auto-mit.exe -DestinationPath $zipPath
+
+          $hash = (Get-FileHash $zipPath -Algorithm SHA256).Hash
+
+          $nuspec = Get-Content auto-mit.nuspec -Raw
+          $nuspec = $nuspec -replace '<version>.*</version>', "<version>$version</version>"
+          Set-Content auto-mit.nuspec $nuspec
+
+          $installScript = Get-Content tools/chocolateyinstall.ps1 -Raw
+          $installScript = $installScript -replace '__VERSION__', $tag
+          $installScript = $installScript -replace '__CHECKSUM__', $hash
+          Set-Content tools/chocolateyinstall.ps1 $installScript
+
+          Write-Host "Prepared Chocolatey package for version $version with checksum $hash"
+
+      - name: Ensure Chocolatey
+        shell: pwsh
+        run: |
+          if (!(Get-Command choco -ErrorAction SilentlyContinue)) {
+            Set-ExecutionPolicy Bypass -Scope Process -Force
+            [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+            iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+          }
+
+      - name: Pack and push package
+        shell: pwsh
+        env:
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+        run: |
+          if (-not $env:CHOCO_API_KEY) {
+            Write-Error "CHOCO_API_KEY secret is not configured."
+          }
+
+          choco pack auto-mit.nuspec
+          $nupkg = Get-ChildItem -Filter "auto-mit.*.nupkg" | Select-Object -First 1
+          choco push $nupkg.Name --source https://push.chocolatey.org/ --api-key $env:CHOCO_API_KEY
