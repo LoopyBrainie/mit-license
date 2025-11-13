@@ -63,7 +63,40 @@ jobs:
             iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
           }
 
-      - name: Pack and push package
+      - name: Pack Chocolatey package
+        shell: pwsh
+        run: |
+          Get-ChildItem -Filter "auto-mit.*.nupkg" | Remove-Item -ErrorAction SilentlyContinue
+          choco pack auto-mit.nuspec
+
+      - name: Ensure GitHub release
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release view $tag --json url *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag --title $tag --notes ""
+          }
+
+      - name: Upload release assets
+        shell: pwsh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          $nupkg = Get-ChildItem -Filter "auto-mit.*.nupkg" | Select-Object -First 1
+          if (-not $nupkg) {
+            Write-Error "No Chocolatey package found to upload."
+          }
+
+          gh release upload $tag `
+            auto-mit-x86_64-pc-windows-msvc.zip `
+            $nupkg.FullName `
+            --clobber
+
+      - name: Push to Chocolatey
         shell: pwsh
         env:
           CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
@@ -72,6 +105,5 @@ jobs:
             Write-Error "CHOCO_API_KEY secret is not configured."
           }
 
-          choco pack auto-mit.nuspec
           $nupkg = Get-ChildItem -Filter "auto-mit.*.nupkg" | Select-Object -First 1
           choco push $nupkg.Name --source https://push.chocolatey.org/ --api-key $env:CHOCO_API_KEY
