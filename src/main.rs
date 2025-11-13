@@ -179,7 +179,7 @@ fn build_copyright_info(config: &LicenseConfig) -> String {
     let mut info = config.copyright.clone();
 
     if let Some(ref url) = config.url {
-        info = format!("{}, {}", info, url);
+        info = format!("{} (<{}>)", info, url);
     }
 
     if let Some(ref email) = config.email {
